@@ -1,0 +1,100 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{url}
+
+\newcommand{\figureplaceholder}[1]{%
+  \fbox{\parbox[c][1.1in][c]{0.9\columnwidth}{\centering\small #1}}%
+}
+
+\begin{document}
+
+\title{Android Application for Monitoring and Reporting the End-User Experience in a Mobile Network}
+
+\author{\IEEEauthorblockN{Petronela Vieru}}
+
+\maketitle
+
+\begin{abstract}
+This paper presents the development process, technical architecture, and practical implementation of TeleQoS, an Android application designed to connect mobile subscribers and telecommunications service providers. Conventional customer-incident management relies on aggregated network key performance indicators (KPIs), which can be difficult to correlate with the experience of an individual user equipment (UE). TeleQoS provides a configurable monitoring dashboard, network performance assessments, drive-test data collection and comparison, and a customer-complaint reporting mechanism. A preliminary survey of 50 mobile subscribers indicated dissatisfaction with existing reporting channels and motivates further investigation of user-facing diagnostic tools.
+\end{abstract}
+
+\begin{IEEEkeywords}
+TeleQoS, mobile networks, quality of service, Android, drive testing, customer incident management
+\end{IEEEkeywords}
+
+\section{Introduction}
+The motivation for developing an application that facilitates user assessment and reporting of mobile network experiences stems from customer-incident (CI) management workflows in the telecommunications industry~\cite{consumerComplaints}. Network engineering and performance analysis (NPA) teams frequently manage large worklogs under service-level agreement (SLA) constraints, which can affect quality-of-service (QoS) investigations.
+
+A standard CI begins with a customer description, start date, address, and device type. Call-center agents create an incident ticket and estimate the radio resources used by the customer. Centralized monitoring tools, however, collect KPIs at network-object level (for example, cell, base transceiver station, or radio network controller), making those measurements difficult to correlate with the behavior of a particular UE, especially in dense areas~\cite{consumerComplaints}.
+
+\subsection{Initial Study and Data Collection}
+A public Google Forms survey was conducted with 50 active mobile subscribers to explore customer sentiment. Respondents aged 18--25 represented 64\% of the sample~\cite{vieruThesis}. When asked about complaint filing, 74\% reported using multi-step call-center processes or limited in-app chatbots. On a 1-to-10 satisfaction scale, no response exceeded 6, and responses clustered around 4~\cite{vieruThesis}. These results describe this sample and are not intended to represent all mobile subscribers.
+
+\begin{figure}[!t]
+  \centering
+  \figureplaceholder{Insert the age-distribution chart from the study.}
+  \caption{Age distribution of survey respondents.}
+  \label{fig:age-distribution}
+\end{figure}
+
+\begin{figure}[!t]
+  \centering
+  \figureplaceholder{Insert the survey chart of available complaint processes.}
+  \caption{Customer complaint processes reported by respondents.}
+  \label{fig:complaint-process}
+\end{figure}
+
+\begin{figure}[!t]
+  \centering
+  \figureplaceholder{Insert the satisfaction-rating chart from the study.}
+  \caption{Respondents' satisfaction ratings for existing operator communication.}
+  \label{fig:satisfaction}
+\end{figure}
+
+\section{Architecture and GUI Use Cases}
+TeleQoS is organized around three modules: sign-in and sign-up, the main application, and complaint reporting. Its user-facing use cases include:
+\begin{itemize}
+  \item \textbf{Configurable monitoring dashboard:} displays cellular identifiers such as MCC, MNC, LAC/TAC, and Cell ID, along with device performance and radio-condition information.
+  \item \textbf{Network performance assessment:} runs configurable uplink and downlink speed tests and reports round-trip time (RTT) and jitter.
+  \item \textbf{Live drive testing and troubleshooting:} collects cellular statistics and presents test status and weak points in a web dashboard.
+  \item \textbf{Comparative drive-test analysis:} compares two tests on the same route to highlight connection releases, handovers, and changes in radio quality.
+\end{itemize}
+
+\begin{figure}[!t]
+  \centering
+  \figureplaceholder{Insert the TeleQoS application structure and module-flow diagram.}
+  \caption{Application structure and module flow.}
+  \label{fig:application-structure}
+\end{figure}
+
+\subsection{Telecom and Map Modules}
+The Telecom tab presents device and subscription parameters for single- and dual-SIM configurations, using Android telephony information~\cite{androidTelephony}. The Map tab uses the Google Maps SDK and OpenCellID API to estimate cellular-tower positions and display Timing Advance (TA) precision-radius overlays~\cite{mapsSdk,openCellID}.
+
+\begin{figure}[!t]
+  \centering
+  \figureplaceholder{Insert a screenshot of the map tab and its TA-radius overlays.}
+  \caption{Map tab with cellular-tower estimates and TA-radius overlays.}
+  \label{fig:map-tab}
+\end{figure}
+
+\section{Implementation and Technology Stack}
+The application was developed in Android Studio using Java and Gradle 7.2, targets API level 31 (Android 12), and has a minimum SDK level of 26. The backend uses Firebase Authentication and Cloud Firestore. A cloud function sends a welcome email through Nodemailer after user registration~\cite{androidProject,gradleGuide,firebaseDocs,firestoreFunctions}.
+
+\subsection{Telephony Parameter Retrieval}
+Network measurements are collected through the Android \texttt{android.telephony} package. Signal indicators include RSSI, RSCP, RSRP, and RSRQ~\cite{androidTelephony}. The source paper describes carrier-frequency calculations based on 3GPP TS 36.101 as follows:
+\begin{align}
+  F_{\mathrm{DL}} &= F_{\mathrm{DL,Low}} + 0.1\left(N_{\mathrm{DL}} - N_{\mathrm{Offs,DL}}\right), \\
+  F_{\mathrm{UL}} &= F_{\mathrm{UL,Low}} + 0.1\left(N_{\mathrm{UL}} - N_{\mathrm{Offs,UL}}\right).
+\end{align}
+Timing Advance values are used to estimate propagation distance. The implementation uses GSM step-based distance bounds and LTE-specific calculations for spatial signal visualization.
+
+\section{Conclusions}
+TeleQoS provides an application-level approach to mobile-network troubleshooting and customer-incident reporting. It combines device-side measurements, performance tests, drive-test workflows, and structured complaint reporting. By attaching diagnostic measurements and location context to a report, the application aims to help NPA teams investigate individual user experiences more directly. The initial survey results motivate this approach, although the limited sample does not establish population-wide conclusions. Future evaluation should measure the accuracy of the collected metrics, the usability of the reporting workflow, and its effect on incident investigation time.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
