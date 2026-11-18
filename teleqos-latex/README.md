@@ -7,7 +7,7 @@ Editable IEEE conference-paper source converted from `IEEE Conference Paper - Te
 - `main.tex`: paper source, IEEE conference layout, and compile-safe figure placeholders.
 - `references.bib`: the nine references listed in the source paper.
 
-The original PDF refers to five figures, but the figures were not provided as separate image files. Replace the boxed placeholders in `main.tex` with the original images before submitting a final paper. Check the citation metadata and complete any missing publication details against the sources you used.
+The compiled `main.pdf` is included. The original paper refers to five figures, but the image files were not provided separately; `main.tex` uses boxed placeholders for them. Replace those placeholders with the original images before submitting a final paper. Check the citation metadata and complete any missing publication details against the sources you used.
 
 ## Build
 
@@ -26,4 +26,4 @@ Alternatively, with `latexmk`:
 latexmk -pdf main.tex
 ```
 
-The resulting file is `main.pdf`. The source machine did not have a LaTeX compiler available, so a compiled PDF is not included yet.
+The build produces `main.pdf`. The included PDF was built with MiKTeX using the commands above.
